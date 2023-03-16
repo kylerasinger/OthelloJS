@@ -4,10 +4,90 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Hello, world!</title>
+  <title>Web Othello</title>
   <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hello, worlslkjd!</h1>
+  <div id="gameContainer" class="gamePage">
+    <h1>Othello</h1>
+    <div id="boardContainer">
+        <!-- line 1-->
+        <div cellIndex="0" class="cell cellL"></div>
+        <div cellIndex="1" class="cell cellD"></div>
+        <div cellIndex="2" class="cell cellL"></div>
+        <div cellIndex="3" class="cell cellD"></div>
+        <div cellIndex="4" class="cell cellL"></div>
+        <div cellIndex="5" class="cell cellD"></div>
+        <div cellIndex="6" class="cell cellL"></div>
+        <div cellIndex="7" class="cell cellD"></div>
+        <!-- line 2-->
+        <div cellIndex="8" class="cell cellD"></div>
+        <div cellIndex="9" class="cell cellL"></div>
+        <div cellIndex="10" class="cell cellD"></div>
+        <div cellIndex="11" class="cell cellL"></div>
+        <div cellIndex="12" class="cell cellD"></div>
+        <div cellIndex="13" class="cell cellL"></div>
+        <div cellIndex="14" class="cell cellD"></div>
+        <div cellIndex="15" class="cell cellL"></div>
+        <!-- line 3-->
+        <div cellIndex="16" class="cell cellL"></div>
+        <div cellIndex="17" class="cell cellD"></div>
+        <div cellIndex="18" class="cell cellL"></div>
+        <div cellIndex="19" class="cell cellD"></div>
+        <div cellIndex="20" class="cell cellL"></div>
+        <div cellIndex="21" class="cell cellD"></div>
+        <div cellIndex="22" class="cell cellL"></div>
+        <div cellIndex="23" class="cell cellD"></div>
+        <!-- line 4-->
+        <div cellIndex="24" class="cell cellD"></div>
+        <div cellIndex="25" class="cell cellL"></div>
+        <div cellIndex="26" class="cell cellD"></div>
+        <div cellIndex="27" class="cell cellL"></div>
+        <div cellIndex="28" class="cell cellD"></div>
+        <div cellIndex="29" class="cell cellL"></div>
+        <div cellIndex="30" class="cell cellD"></div>
+        <div cellIndex="31" class="cell cellL"></div>
+        <!-- line 5-->
+        <div cellIndex="32" class="cell cellL"></div>
+        <div cellIndex="33" class="cell cellD"></div>
+        <div cellIndex="34" class="cell cellL"></div>
+        <div cellIndex="35" class="cell cellD"></div>
+        <div cellIndex="36" class="cell cellL"></div>
+        <div cellIndex="37" class="cell cellD"></div>
+        <div cellIndex="38" class="cell cellL"></div>
+        <div cellIndex="39" class="cell cellD"></div>
+        <!-- line 6-->
+        <div cellIndex="40" class="cell cellD"></div>
+        <div cellIndex="41" class="cell cellL"></div>
+        <div cellIndex="42" class="cell cellD"></div>
+        <div cellIndex="43" class="cell cellL"></div>
+        <div cellIndex="44" class="cell cellD"></div>
+        <div cellIndex="45" class="cell cellL"></div>
+        <div cellIndex="46" class="cell cellD"></div>
+        <div cellIndex="47" class="cell cellL"></div>
+        <!-- line 7-->
+        <div cellIndex="48" class="cell cellL"></div>
+        <div cellIndex="49" class="cell cellD"></div>
+        <div cellIndex="50" class="cell cellL"></div>
+        <div cellIndex="51" class="cell cellD"></div>
+        <div cellIndex="52" class="cell cellL"></div>
+        <div cellIndex="53" class="cell cellD"></div>
+        <div cellIndex="54" class="cell cellL"></div>
+        <div cellIndex="55" class="cell cellD"></div>
+        <!-- line 8-->
+        <div cellIndex="56" class="cell cellD"></div>
+        <div cellIndex="57" class="cell cellL"></div>
+        <div cellIndex="58" class="cell cellD"></div>
+        <div cellIndex="59" class="cell cellL"></div>
+        <div cellIndex="60" class="cell cellD"></div>
+        <div cellIndex="61" class="cell cellL"></div>
+        <div cellIndex="62" class="cell cellD"></div>
+        <div cellIndex="63" class="cell cellL"></div>
+    </div>
+    <h2 id="statusText"></h2>
+    <button id="restartBtn">Restart</button>
+  </div>
+  <script src="index.js"></script>
 </body>
 </html>
