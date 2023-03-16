@@ -1,22 +1,18 @@
 .cell{
     width: 50px;
     height: 50px;
-    background-color: #BFE29B;
     line-height: 50px;
-    
+    background-color: green;
 }
 .cellL{
-    border: 2px solid gray;
-    background-color: white;
+    border: 2px solid black;
 }
 
 .cellD{
     border: 2px solid black;
-    background-color: lightgray;
 }
 
 #boardContainer {
-    border: 13px, solid, black;
     display: grid;
     grid-template-columns: repeat(8, auto);
     margin: auto;
@@ -32,5 +28,9 @@
 }
 
 #restartBtn{
+    cursor: pointer;
+}
+
+#checkWinnerBtn{
     cursor: pointer;
 }
