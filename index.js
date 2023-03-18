@@ -21,6 +21,7 @@ startGame();
 
 function startGame(){ //initializeGame
     //temp to set a starting position
+    running = true;
     cells[27].style.backgroundColor = "white";
     cells[28].style.backgroundColor = "black";
     cells[35].style.backgroundColor = "black";
@@ -28,7 +29,7 @@ function startGame(){ //initializeGame
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
     restartBtn.addEventListener("click", restartGame);
     statusText.textContent = `${currentPlayer}'s turn` ;
-    running = true;
+    console.log("Current Player: "+currentPlayer);
 }
 
 function cellClicked(){ 
@@ -42,10 +43,10 @@ function cellClicked(){
 function makeMove(cell, index){ //updateCell 
     if(currentPlayer == "B"){
         options[index] = "B";
-        cell.style.backgroundColor = "white";
+        cell.style.backgroundColor = "black";
     }else if(currentPlayer == "W"){
         options[index] = "W";
-        cell.style.backgroundColor = "black";
+        cell.style.backgroundColor = "white";
     }
     //add check for flippable pieces
 }
@@ -54,6 +55,7 @@ function checkMove(cell, index){
     //8 loops, if true then return true;    LEFT OFF HERE 2023-03-16 3:05PM
     let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
     //                 N, NE, E,SE, S,SW,  W, NW,
+    if(options[index] != ''){console.log("occupied"); return false;}
     for(let i = 0; i < 8; i++){
         if(checkDir(index, directions[i]) == true){
             return true;
@@ -73,16 +75,27 @@ function checkDir(pos, dir){
 
     pos = Number(pos) + Number(dir);
 
+
     loop = true;
     let iterance = 0;
     let pieceCount = 0;
     while(loop == true){
         iterance++;
         console.log("\tLoop entrance for dir: " + dir + " | iterance " + iterance);
+
+        //check for out of bounds
         if(pos < 0 || pos > 63){console.log("\t\tout of bounds | terminated. "); loop = false; break;}
-        //if(iterance == 1 && options[pos] == currentPlayer){loop = false; break;}
+        
+        //check for if next spot is its own color
+        if(iterance == 1 && options[pos] == currentPlayer){console.log("\t\tfriendly next ");loop = false; break;}
+        
+        //check for empty cell
         if(options[pos] == ''){console.log("\t\tempty cell | terminated"); loop = false;}
+        
+        //checks for opposite pieces in a direction
         if(options[pos] == oppoPlayer){pieceCount++;}
+
+        //checks for its own end piece and makes sure that there are opposite pieces between.
         if(options[pos] == currentPlayer && pieceCount > 0){
             console.log("\t\ttrue for index: " + pos);
             return true;
@@ -93,8 +106,8 @@ function checkDir(pos, dir){
 }
 
 function takeTurn(){ //changePlayer
-    statusText.textContent = `${currentPlayer}'s turn`;
     currentPlayer = (currentPlayer == "B") ? "W" : "B";
+    statusText.textContent = `${currentPlayer}'s turn`;
 }
 
 function checkWinner(){ 
