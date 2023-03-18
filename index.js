@@ -20,6 +20,7 @@ startGame();
 
 
 function startGame(){ //initializeGame
+    //temp to set a starting position
     cells[27].style.backgroundColor = "white";
     cells[28].style.backgroundColor = "black";
     cells[35].style.backgroundColor = "black";
@@ -32,29 +33,64 @@ function startGame(){ //initializeGame
 
 function cellClicked(){ 
     const cellIndex = this.getAttribute("cellIndex");
-    if(options[cellIndex] != "" || !running) {return;} //logic check for if it is playable
-    //^^will be if checkMove() == false
+    if(checkMove(this, cellIndex) == false || !running) {console.log("Illegal Move"); return; } //logic check for if it is playable
     makeMove(this, cellIndex);
     checkWinner();
     takeTurn();
 }
 
 function makeMove(cell, index){ //updateCell 
-    options[index] = currentPlayer; 
     if(currentPlayer == "B"){
+        options[index] = "B";
         cell.style.backgroundColor = "white";
-    }else{
+    }else if(currentPlayer == "W"){
+        options[index] = "W";
         cell.style.backgroundColor = "black";
     }
     //add check for flippable pieces
 }
 
-function checkMove(cell, index){
-    //8 loops, if true then return true;
+function checkMove(cell, index){    
+    //8 loops, if true then return true;    LEFT OFF HERE 2023-03-16 3:05PM
+    let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
+    //                 N, NE, E,SE, S,SW,  W, NW,
+    for(let i = 0; i < 8; i++){
+        if(checkDir(index, directions[i]) == true){
+            return true;
+        }
+    }
 
-    //if skips past 8 loops, then not playable so return false;
+    //if skips past 8 directions, then not playable so return false;
+    console.log("Illegal Move");
+    return false;
 }
 
+function checkDir(pos, dir){
+    console.log("direction: " + dir);
+    let oppoPlayer;
+    if(currentPlayer == 'B'){oppoPlayer = 'W';}
+    if(currentPlayer == 'W'){oppoPlayer = 'B';}
+
+    pos = Number(pos) + Number(dir);
+
+    loop = true;
+    let iterance = 0;
+    let pieceCount = 0;
+    while(loop == true){
+        iterance++;
+        console.log("\tLoop entrance for dir: " + dir + " | iterance " + iterance);
+        if(pos < 0 || pos > 63){console.log("\t\tout of bounds | terminated. "); loop = false; break;}
+        //if(iterance == 1 && options[pos] == currentPlayer){loop = false; break;}
+        if(options[pos] == ''){console.log("\t\tempty cell | terminated"); loop = false;}
+        if(options[pos] == oppoPlayer){pieceCount++;}
+        if(options[pos] == currentPlayer && pieceCount > 0){
+            console.log("\t\ttrue for index: " + pos);
+            return true;
+        }
+        pos = Number(pos) + Number(dir);
+    }
+
+}
 
 function takeTurn(){ //changePlayer
     statusText.textContent = `${currentPlayer}'s turn`;
@@ -91,6 +127,7 @@ function restartGame(){
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", ];
+    currentPlayer = "B";
     for(let i = 0; i < 63; i++){
         cellIndex = i;
         cellIndex.style.backgroundColor = "green";
