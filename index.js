@@ -1,3 +1,6 @@
+//left off on makeMove(). 
+//Make sure that both the options array and html elements change
+
 const cells = document.querySelectorAll(".cell");
 const cellStatus = document.querySelector("#cellStatus");
 const restartBtn = document.querySelector("#restartBtn");
@@ -22,6 +25,7 @@ startGame();
 function startGame(){ //initializeGame
     //temp to set a starting position
     running = true;
+    //default board. could later make a board loader.
     cells[27].style.backgroundColor = "white";
     cells[28].style.backgroundColor = "black";
     cells[35].style.backgroundColor = "black";
@@ -34,24 +38,77 @@ function startGame(){ //initializeGame
 
 function cellClicked(){ 
     const cellIndex = this.getAttribute("cellIndex");
-    if(checkMove(this, cellIndex) == false || !running) {console.log("Illegal Move"); return; } //logic check for if it is playable
-    makeMove(this, cellIndex);
+    if(checkMove(cellIndex) == false || !running) {console.log("Illegal Move"); return; } //logic check for if it is playable
+    if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
     checkWinner();
     takeTurn();
 }
 
 function makeMove(cell, index){ //updateCell 
-    if(currentPlayer == "B"){
-        options[index] = "B";
-        cell.style.backgroundColor = "black";
-    }else if(currentPlayer == "W"){
-        options[index] = "W";
-        cell.style.backgroundColor = "white";
+    console.log("placeMove():")
+    let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
+    //                 N, NE, E,SE, S,SW,  W, NW,
+    let oppoPlayer;
+    let oppoColour;
+    let currentColour;
+    if(currentPlayer == 'B'){oppoPlayer = 'W'; oppoColour = "white"; currentColour = "black";}
+    if(currentPlayer == 'W'){oppoPlayer = 'B'; oppoColour = "blacK"; currentColour = "white";}
+    loop1 = true;
+    loop2 = true;
+    let pieceCount = 0;
+    let pos = index;
+
+    let addCount = 0;
+    for(let i = 0; i < 8; i++){//runs all 8 directions
+        console.log("\tFor loop direction: "+directions[i]);
+        pos = index;
+        console.log("\tForward loop start: ");
+        pieceCount = 0;
+
+        loop1 = true;
+        while(loop1==true){
+            loop2 = true;
+            pos = Number(pos) + Number(directions[i]);
+            if(pos < 0 || pos > 63){loop1 = false;}
+            console.log("\t\tPOS: "+pos);
+            if(options[pos] == ''){console.log("\t\tEmpty spot | Terminated at "+pos); loop1 = false;}
+            console.log("\t\toppoPlayer = "+oppoPlayer + " |options[pos] = "+options[pos]);
+            if(options[pos] == oppoPlayer){console.log("\t\tAdd to piece count");pieceCount++};
+            if(options[pos] == currentPlayer && pieceCount > 0){
+            console.log("\t\tFlanking piece found");
+                //flanking piece found, time to get back and flip places
+                while(loop2==true){
+                    console.log("\t\tReversing loop start:");
+                    pos = Number(pos) - Number(directions[i])
+                    console.log("\t\t\tPOS: "+pos);
+                    if(options[pos] == oppoPlayer){
+                        console.log("\t\t\toptions[pos]"+options[pos]);
+                        options[pos] = currentPlayer;
+                        console.log("\t\t\toptions[pos]"+options[pos]);
+                        cell.style.backgroundColor = currentColour;
+                        cells[pos].style.backgroundColor = currentColour;
+                    }else{
+                        options[pos] = currentPlayer;
+                        cell.style.backgroundColor = currentColour;
+                        cells[pos].style.backgroundColor = currentColour;
+                        loop2 = false;
+                    }
+                }
+                loop1 = false;
+            }
+        }
     }
-    //add check for flippable pieces
+
+    // if(currentPlayer == "B"){
+    //     options[index] = "B";
+    //     cell.style.backgroundColor = "black";
+    // }else if(currentPlayer == "W"){
+    //     options[index] = "W";
+    //     cell.style.backgroundColor = "white";
+    // }
 }
 
-function checkMove(cell, index){    
+function checkMove(index){    
     //8 loops, if true then return true;    LEFT OFF HERE 2023-03-16 3:05PM
     let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
     //                 N, NE, E,SE, S,SW,  W, NW,
@@ -61,7 +118,6 @@ function checkMove(cell, index){
             return true;
         }
     }
-
     //if skips past 8 directions, then not playable so return false;
     console.log("Illegal Move");
     return false;
@@ -82,19 +138,14 @@ function checkDir(pos, dir){
     while(loop == true){
         iterance++;
         console.log("\tLoop entrance for dir: " + dir + " | iterance " + iterance);
-
         //check for out of bounds
         if(pos < 0 || pos > 63){console.log("\t\tout of bounds | terminated. "); loop = false; break;}
-        
         //check for if next spot is its own color
         if(iterance == 1 && options[pos] == currentPlayer){console.log("\t\tfriendly next ");loop = false; break;}
-        
         //check for empty cell
         if(options[pos] == ''){console.log("\t\tempty cell | terminated"); loop = false;}
-        
         //checks for opposite pieces in a direction
         if(options[pos] == oppoPlayer){pieceCount++;}
-
         //checks for its own end piece and makes sure that there are opposite pieces between.
         if(options[pos] == currentPlayer && pieceCount > 0){
             console.log("\t\ttrue for index: " + pos);
