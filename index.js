@@ -1,7 +1,9 @@
 //left off on makeMove(). 
 //stop the makeMove() and checkMove() from moving over the side borders
+//if i want pieces to display i think i need to make a piece div for each cell.
 
 const cells = document.querySelectorAll(".cell");
+const pieces = document.querySelectorAll(".piece");
 const cellStatus = document.querySelector("#cellStatus");
 const restartBtn = document.querySelector("#restartBtn");
 
@@ -59,7 +61,11 @@ function makeMove(cell, index){ //updateCell
     loop1 = true;
     loop2 = true;
     let pieceCount = 0;
-    let pos = index;
+    let pos;
+
+    let initialRow = Math.trunc((Number(index))/8);
+    let newRow = Math.trunc((Number(index))/8);
+    let diffRow;
 
     let addCount = 0;
     for(let i = 0; i < 8; i++){//runs all 8 directions
@@ -72,13 +78,19 @@ function makeMove(cell, index){ //updateCell
         while(loop1==true){
             loop2 = true;
             pos = Number(pos) + Number(directions[i]);
+            newRow = Math.trunc(Number(pos)/8);
+            console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck[i] + 
+                " | initialRow = " + initialRow + " | newRow = " + newRow);
             if(pos < 0 || pos > 63){loop1 = false;}
+            //if()
+
             console.log("\t\tPOS: "+pos);
             if(options[pos] == ''){console.log("\t\tEmpty spot | Terminated at "+pos); loop1 = false;}
             console.log("\t\toppoPlayer = "+oppoPlayer + " |options[pos] = "+options[pos]);
             if(options[pos] == oppoPlayer){console.log("\t\tAdd to piece count");pieceCount++};
             if(options[pos] == currentPlayer && pieceCount > 0){
             console.log("\t\tFlanking piece found");
+            
                 //flanking piece found, time to get back and flip places
                 while(loop2==true){
                     console.log("\t\tReversing loop start:");
@@ -189,8 +201,8 @@ function restartGame(){
     options =
     ["", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
-    "", "", "", "", "", "", "", "", 
-    "", "", "", "W", "B", "", "", "", 
+    "", "", "", "", "", "B", "W", "", 
+    "W", "B", "", "W", "B", "", "", "", 
     "", "", "", "B", "W", "", "", "", 
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
@@ -200,6 +212,14 @@ function restartGame(){
     for(let i = 0; i < 63; i++){
         cells[i].style.backgroundColor = "green";
         if(i == 27 || i == 36){cells[i].style.backgroundColor = "white"}
+        // if(i == 27 || i == 36){pieces[i].style.backgroundColor = "white"}
         if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
+        // if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}
+        
+        //test case
+        if(i == 21 || i == 25){cells[i].style.backgroundColor = "black"}
+        // if(i == 21 || i == 25){pieces[i].style.backgroundColor = "black"}
+        if(i == 22 || i == 24){cells[i].style.backgroundColor = "white"}
+        // if(i == 22 || i == 24){pieces[i].style.backgroundColor = "white"}
     }
 }
