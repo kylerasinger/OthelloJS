@@ -1,5 +1,5 @@
 //left off on makeMove(). 
-//Make sure that both the options array and html elements change
+//stop the makeMove() and checkMove() from moving over the side borders
 
 const cells = document.querySelectorAll(".cell");
 const cellStatus = document.querySelector("#cellStatus");
@@ -14,7 +14,12 @@ let options =
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", ];
-
+    /*both direction and rowCheck will be needed for 
+    any sort of movement on the board. Thus it is global.*/
+let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
+//                 N, NE, E,SE, S,SW,  W, NW,
+let rowCheck = [ 1,  1, 0,-1,-1,-1,  0,  1,];
+//               N, NE, E,SE, S,SW,  W, NW,
 let currentPlayer = "B";
 let running = false;
 
@@ -46,8 +51,6 @@ function cellClicked(){
 
 function makeMove(cell, index){ //updateCell 
     console.log("placeMove():")
-    let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
-    //                 N, NE, E,SE, S,SW,  W, NW,
     let oppoPlayer;
     let oppoColour;
     let currentColour;
@@ -98,23 +101,13 @@ function makeMove(cell, index){ //updateCell
             }
         }
     }
-
-    // if(currentPlayer == "B"){
-    //     options[index] = "B";
-    //     cell.style.backgroundColor = "black";
-    // }else if(currentPlayer == "W"){
-    //     options[index] = "W";
-    //     cell.style.backgroundColor = "white";
-    // }
 }
 
 function checkMove(index){    
     //8 loops, if true then return true;    LEFT OFF HERE 2023-03-16 3:05PM
-    let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
-    //                 N, NE, E,SE, S,SW,  W, NW,
     if(options[index] != ''){console.log("occupied"); return false;}
     for(let i = 0; i < 8; i++){
-        if(checkDir(index, directions[i]) == true){
+        if(checkDir(index, directions[i], rowCheck[i]) == true){
             return true;
         }
     }
@@ -123,14 +116,16 @@ function checkMove(index){
     return false;
 }
 
-function checkDir(pos, dir){
+function checkDir(pos, dir, rowCheck){
     console.log("direction: " + dir);
     let oppoPlayer;
     if(currentPlayer == 'B'){oppoPlayer = 'W';}
     if(currentPlayer == 'W'){oppoPlayer = 'B';}
 
+    let initialRow = Math.trunc((Number(pos))/8);
     pos = Number(pos) + Number(dir);
-
+    let newRow = Math.trunc((Number(pos))/8);
+    let diffRow;
 
     loop = true;
     let iterance = 0;
@@ -138,19 +133,28 @@ function checkDir(pos, dir){
     while(loop == true){
         iterance++;
         console.log("\tLoop entrance for dir: " + dir + " | iterance " + iterance);
+        //check for row skipping
+        diffRow = Math.trunc(initialRow - newRow);
+        console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck + " | initialRow = " + initialRow + " | newRow = " + newRow);
+        if(diffRow != rowCheck){console.log("\t\trow skip | terminated. "); loop = false; break;}
         //check for out of bounds
         if(pos < 0 || pos > 63){console.log("\t\tout of bounds | terminated. "); loop = false; break;}
         //check for if next spot is its own color
         if(iterance == 1 && options[pos] == currentPlayer){console.log("\t\tfriendly next ");loop = false; break;}
         //check for empty cell
         if(options[pos] == ''){console.log("\t\tempty cell | terminated"); loop = false;}
-        //checks for opposite pieces in a direction
-        if(options[pos] == oppoPlayer){pieceCount++;}
         //checks for its own end piece and makes sure that there are opposite pieces between.
         if(options[pos] == currentPlayer && pieceCount > 0){
             console.log("\t\ttrue for index: " + pos);
             return true;
         }
+        //checks for opposite pieces in a direction
+        if(options[pos] == oppoPlayer){pieceCount++;}
+        // //checks for its own end piece and makes sure that there are opposite pieces between.
+        // if(options[pos] == currentPlayer && pieceCount > 0){
+        //     console.log("\t\ttrue for index: " + pos);
+        //     return true;
+        // }
         pos = Number(pos) + Number(dir);
     }
 
@@ -192,9 +196,10 @@ function restartGame(){
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", ];
     currentPlayer = "B";
+    statusText.textContent = currentPlayer + "'s turn";
     for(let i = 0; i < 63; i++){
-        cellIndex = i;
-        cellIndex.style.backgroundColor = "green";
-        
+        cells[i].style.backgroundColor = "green";
+        if(i == 27 || i == 36){cells[i].style.backgroundColor = "white"}
+        if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
     }
 }
