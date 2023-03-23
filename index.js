@@ -33,10 +33,10 @@ function startGame(){ //initializeGame
     //temp to set a starting position
     running = true;
     //default board. could later make a board loader.
-    cells[27].style.backgroundColor = "white";
-    cells[28].style.backgroundColor = "black";
-    cells[35].style.backgroundColor = "black";
-    cells[36].style.backgroundColor = "white";
+    pieces[27].style.backgroundColor = "white";
+    pieces[28].style.backgroundColor = "black";
+    pieces[35].style.backgroundColor = "black";
+    pieces[36].style.backgroundColor = "white";
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
     restartBtn.addEventListener("click", restartGame);
     statusText.textContent = `${currentPlayer}'s turn` ;
@@ -45,13 +45,14 @@ function startGame(){ //initializeGame
 
 function cellClicked(){ 
     const cellIndex = this.getAttribute("cellIndex");
+    const pieceIndex = this.getAttribute("pieceIndex");
     if(checkMove(cellIndex) == false || !running) {console.log("Illegal Move"); return; } //logic check for if it is playable
-    if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
+    if(checkMove(cellIndex) == true ){makeMove(pieces[cellIndex], cellIndex);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
     checkWinner();
     takeTurn();
 }
 
-function makeMove(cell, index){ //updateCell 
+function makeMove(piece, index){ //updateCell 
     console.log("placeMove():")
     let oppoPlayer;
     let oppoColour;
@@ -100,12 +101,12 @@ function makeMove(cell, index){ //updateCell
                         console.log("\t\t\toptions[pos]"+options[pos]);
                         options[pos] = currentPlayer;
                         console.log("\t\t\toptions[pos]"+options[pos]);
-                        cell.style.backgroundColor = currentColour;
-                        cells[pos].style.backgroundColor = currentColour;
+                        piece.style.backgroundColor = currentColour; //this is causing the first cell to change its background
+                        pieces[pos].style.backgroundColor = currentColour;
                     }else{
                         options[pos] = currentPlayer;
-                        cell.style.backgroundColor = currentColour;
-                        cells[pos].style.backgroundColor = currentColour;
+                        piece.style.backgroundColor = currentColour;
+                        pieces[pos].style.backgroundColor = currentColour;
                         loop2 = false;
                     }
                 }
@@ -210,16 +211,16 @@ function restartGame(){
     currentPlayer = "B";
     statusText.textContent = currentPlayer + "'s turn";
     for(let i = 0; i < 63; i++){
-        cells[i].style.backgroundColor = "green";
-        if(i == 27 || i == 36){cells[i].style.backgroundColor = "white"}
-        // if(i == 27 || i == 36){pieces[i].style.backgroundColor = "white"}
-        if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
-        // if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}
+        pieces[i].style.backgroundColor = "green";
+        // if(i == 27 || i == 36){cells[i].style.backgroundColor = "white"}
+        if(i == 27 || i == 36){pieces[i].style.backgroundColor = "white"}
+        // if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
+        if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}
         
         //test case
-        if(i == 21 || i == 25){cells[i].style.backgroundColor = "black"}
-        // if(i == 21 || i == 25){pieces[i].style.backgroundColor = "black"}
-        if(i == 22 || i == 24){cells[i].style.backgroundColor = "white"}
-        // if(i == 22 || i == 24){pieces[i].style.backgroundColor = "white"}
+        // if(i == 21 || i == 25){cells[i].style.backgroundColor = "black"}
+        if(i == 21 || i == 25){pieces[i].style.backgroundColor = "black"}
+        // if(i == 22 || i == 24){cells[i].style.backgroundColor = "white"}
+        if(i == 22 || i == 24){pieces[i].style.backgroundColor = "white"}
     }
 }
