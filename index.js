@@ -1,6 +1,5 @@
 //left off on makeMove(). 
-//stop the makeMove() and checkMove() from moving over the side borders
-//if i want pieces to display i think i need to make a piece div for each cell.
+//North and south makeMove() is currently broken
 
 const cells = document.querySelectorAll(".cell");
 const pieces = document.querySelectorAll(".piece");
@@ -86,11 +85,11 @@ function makeMove(piece, index,){ //updateCell
             newRow = Math.trunc(Number(pos)/8);
             diffRow = Math.trunc(Number(initialRow) - Number(newRow));
             if(i == 3 || i == 7){diffRow = Math.trunc(Number(initialRow) - Number(newRow)) - Number(pieceCount);}
-
+            if(i == 0 || i == 4){diffRow = Math.trunc(Number(initialRow) - Number(newRow)) - Number(pieceCount);}
             console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck[i] + 
                 " | initialRow = " + initialRow + " | newRow = " + newRow);
             if(pos < 0 || pos > 63){loop1 = false;}
-            if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
+            // if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
 
             console.log("\t\tPOS: "+pos);
             if(options[pos] == ''){console.log("\t\tEmpty spot | Terminated at "+pos); loop1 = false;}
@@ -204,8 +203,8 @@ function restartGame(){
     options =
     ["", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
-    "", "", "", "", "", "B", "W", "", 
-    "W", "B", "", "W", "B", "", "", "", 
+    "", "", "", "", "", "", "", "", 
+    "", "", "", "W", "B", "", "", "", 
     "", "", "", "B", "W", "", "", "", 
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
@@ -219,11 +218,7 @@ function restartGame(){
         // if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
         if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}
         
-        //test case
-        // if(i == 21 || i == 25){cells[i].style.backgroundColor = "black"}
-        if(i == 21 || i == 25){pieces[i].style.backgroundColor = "black"}
-        // if(i == 22 || i == 24){cells[i].style.backgroundColor = "white"}
-        if(i == 22 || i == 24){pieces[i].style.backgroundColor = "white"}
+        
     }
 }
 
@@ -232,18 +227,18 @@ function loadTestBoardOne(){
     options =
     ["", "", "", "", "", "", "B", "", 
     "", "", "", "", "", "", "", "W", 
-    "", "", "", "", "", "", "", "", 
-    "", "W", "B", "", "", "", "", "", 
-    "", "", "", "", "", "B", "W", "", 
-    "", "", "", "", "", "", "", "", 
+    "", "", "", "", "", "B", "", "", 
+    "", "W", "B", "", "", "", "W", "", 
+    "", "W", "", "", "", "B", "W", "", 
+    "", "", "B", "", "", "", "", "", 
     "W", "", "", "", "", "", "", "", 
     "", "B", "", "", "", "", "", "", ];
     currentPlayer = "B";
     statusText.textContent = currentPlayer + "'s turn";
     for(let i = 0; i < 63; i++){
         pieces[i].style.backgroundColor = "green";
-        if(i == 6 || i == 57 || i == 26 || i == 37){pieces[i].style.backgroundColor = "black"}
-        if(i == 15 || i == 48 || i == 25 || i == 38){pieces[i].style.backgroundColor = "white"}
+        if(i == 6 || i == 57 || i == 26 || i == 37 || i == 42 || i == 21){pieces[i].style.backgroundColor = "black"}
+        if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
         if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
     }
 }
@@ -253,18 +248,18 @@ function loadTestBoardTwo(){
     options =
     ["", "B", "", "", "", "", "", "", 
     "W", "", "", "", "", "B", "W", "", 
-    "", "", "", "", "", "", "", "", 
-    "", "", "", "", "", "", "", "", 
-    "", "", "", "", "", "", "", "", 
-    "", "", "", "", "", "", "", "", 
+    "", "", "", "", "", "", "W", "", 
+    "", "", "", "", "", "B", "", "", 
+    "", "", "B", "", "", "", "", "", 
+    "", "W", "", "", "", "", "", "", 
     "", "W", "B", "", "", "", "", "W", 
     "", "", "", "", "", "", "B", "", ];
     currentPlayer = "B";
     statusText.textContent = currentPlayer + "'s turn";
     for(let i = 0; i < 63; i++){
         pieces[i].style.backgroundColor = "green";
-        if(i == 1 || i == 13 || i == 50 || i == 62){pieces[i].style.backgroundColor = "black"}
-        if(i == 8 || i == 14 || i == 55 || i == 49){pieces[i].style.backgroundColor = "white"}
+        if(i == 1 || i == 13 || i == 50 || i == 62 || i == 29 || i == 34){pieces[i].style.backgroundColor = "black"}
+        if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
         if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
     }
 }
