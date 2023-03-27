@@ -6,6 +6,8 @@ const cells = document.querySelectorAll(".cell");
 const pieces = document.querySelectorAll(".piece");
 const cellStatus = document.querySelector("#cellStatus");
 const restartBtn = document.querySelector("#restartBtn");
+const testBoardOne = document.querySelector("#testBoardOne");
+const testBoardTwo = document.querySelector("#testBoardTwo");
 
 let options =
     ["", "", "", "", "", "", "", "", 
@@ -39,6 +41,8 @@ function startGame(){ //initializeGame
     pieces[36].style.backgroundColor = "white";
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
     restartBtn.addEventListener("click", restartGame);
+    testBoardOne.addEventListener("click", loadTestBoardOne);
+    testBoardTwo.addEventListener("click", loadTestBoardTwo);
     statusText.textContent = `${currentPlayer}'s turn` ;
     console.log("Current Player: "+currentPlayer);
 }
@@ -52,8 +56,8 @@ function cellClicked(){
     takeTurn();
 }
 
-function makeMove(piece, index){ //updateCell 
-    console.log("placeMove():")
+function makeMove(piece, index,){ //updateCell 
+    console.log("makeMove():")
     let oppoPlayer;
     let oppoColour;
     let currentColour;
@@ -80,10 +84,13 @@ function makeMove(piece, index){ //updateCell
             loop2 = true;
             pos = Number(pos) + Number(directions[i]);
             newRow = Math.trunc(Number(pos)/8);
+            diffRow = Math.trunc(Number(initialRow) - Number(newRow));
+            if(i == 3 || i == 7){diffRow = Math.trunc(Number(initialRow) - Number(newRow)) - Number(pieceCount);}
+
             console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck[i] + 
                 " | initialRow = " + initialRow + " | newRow = " + newRow);
             if(pos < 0 || pos > 63){loop1 = false;}
-            //if()
+            if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
 
             console.log("\t\tPOS: "+pos);
             if(options[pos] == ''){console.log("\t\tEmpty spot | Terminated at "+pos); loop1 = false;}
@@ -91,7 +98,6 @@ function makeMove(piece, index){ //updateCell
             if(options[pos] == oppoPlayer){console.log("\t\tAdd to piece count");pieceCount++};
             if(options[pos] == currentPlayer && pieceCount > 0){
             console.log("\t\tFlanking piece found");
-            
                 //flanking piece found, time to get back and flip places
                 while(loop2==true){
                     console.log("\t\tReversing loop start:");
@@ -138,7 +144,7 @@ function checkDir(pos, dir, rowCheck){
     let initialRow = Math.trunc((Number(pos))/8);
     pos = Number(pos) + Number(dir);
     let newRow = Math.trunc((Number(pos))/8);
-    let diffRow;
+    let diffRow = 0;
 
     loop = true;
     let iterance = 0;
@@ -147,7 +153,7 @@ function checkDir(pos, dir, rowCheck){
         iterance++;
         console.log("\tLoop entrance for dir: " + dir + " | iterance " + iterance);
         //check for row skipping
-        diffRow = Math.trunc(initialRow - newRow);
+        diffRow = Math.trunc(Number(initialRow) - Number(newRow));
         console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck + " | initialRow = " + initialRow + " | newRow = " + newRow);
         if(diffRow != rowCheck){console.log("\t\trow skip | terminated. "); loop = false; break;}
         //check for out of bounds
@@ -164,10 +170,6 @@ function checkDir(pos, dir, rowCheck){
         //checks for opposite pieces in a direction
         if(options[pos] == oppoPlayer){pieceCount++;}
         // //checks for its own end piece and makes sure that there are opposite pieces between.
-        // if(options[pos] == currentPlayer && pieceCount > 0){
-        //     console.log("\t\ttrue for index: " + pos);
-        //     return true;
-        // }
         pos = Number(pos) + Number(dir);
     }
 
@@ -222,5 +224,47 @@ function restartGame(){
         if(i == 21 || i == 25){pieces[i].style.backgroundColor = "black"}
         // if(i == 22 || i == 24){cells[i].style.backgroundColor = "white"}
         if(i == 22 || i == 24){pieces[i].style.backgroundColor = "white"}
+    }
+}
+
+function loadTestBoardOne(){
+    console.log("load test board one");
+    options =
+    ["", "", "", "", "", "", "B", "", 
+    "", "", "", "", "", "", "", "W", 
+    "", "", "", "", "", "", "", "", 
+    "", "W", "B", "", "", "", "", "", 
+    "", "", "", "", "", "B", "W", "", 
+    "", "", "", "", "", "", "", "", 
+    "W", "", "", "", "", "", "", "", 
+    "", "B", "", "", "", "", "", "", ];
+    currentPlayer = "B";
+    statusText.textContent = currentPlayer + "'s turn";
+    for(let i = 0; i < 63; i++){
+        pieces[i].style.backgroundColor = "green";
+        if(i == 6 || i == 57 || i == 26 || i == 37){pieces[i].style.backgroundColor = "black"}
+        if(i == 15 || i == 48 || i == 25 || i == 38){pieces[i].style.backgroundColor = "white"}
+        if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
+    }
+}
+
+function loadTestBoardTwo(){
+    console.log("load test board two");
+    options =
+    ["", "B", "", "", "", "", "", "", 
+    "W", "", "", "", "", "B", "W", "", 
+    "", "", "", "", "", "", "", "", 
+    "", "", "", "", "", "", "", "", 
+    "", "", "", "", "", "", "", "", 
+    "", "", "", "", "", "", "", "", 
+    "", "W", "B", "", "", "", "", "W", 
+    "", "", "", "", "", "", "B", "", ];
+    currentPlayer = "B";
+    statusText.textContent = currentPlayer + "'s turn";
+    for(let i = 0; i < 63; i++){
+        pieces[i].style.backgroundColor = "green";
+        if(i == 1 || i == 13 || i == 50 || i == 62){pieces[i].style.backgroundColor = "black"}
+        if(i == 8 || i == 14 || i == 55 || i == 49){pieces[i].style.backgroundColor = "white"}
+        if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
     }
 }
