@@ -18,6 +18,10 @@ let options =
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", ];
+    pieces[27].style.backgroundColor = "white";
+    pieces[28].style.backgroundColor = "black";
+    pieces[35].style.backgroundColor = "black";
+    pieces[36].style.backgroundColor = "white";
 let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
 //                 N, NE, E,SE, S,SW,  W, NW,
 let rowCheck = [ 1,  1, 0,-1,-1,-1,  0,  1,];
@@ -33,10 +37,6 @@ function startGame(){ //initializeGame
     //temp to set a starting position
     running = true;
     //default board. could later make a board loader.
-    pieces[27].style.backgroundColor = "white";
-    pieces[28].style.backgroundColor = "black";
-    pieces[35].style.backgroundColor = "black";
-    pieces[36].style.backgroundColor = "white";
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
     restartBtn.addEventListener("click", restartGame);
     testBoardOne.addEventListener("click", loadTestBoardOne);
@@ -250,15 +250,15 @@ function restartGame(){
     "", "", "", "", "", "", "", "", ];
     currentPlayer = "B";
     statusText.textContent = currentPlayer + "'s turn";
-    for(let i = 0; i < 63; i++){
+    for(let i = 0; i < 64; i++){
         pieces[i].style.backgroundColor = "green";
         // if(i == 27 || i == 36){cells[i].style.backgroundColor = "white"}
         if(i == 27 || i == 36){pieces[i].style.backgroundColor = "white"}
         // if(i == 28 || i == 35){cells[i].style.backgroundColor = "black"}
-        if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}
-        
-        
+        if(i == 28 || i == 35){pieces[i].style.backgroundColor = "black"}        
     }
+    hidePlayableMoves();
+    showPlayableMoves();
 }
 
 function loadTestBoardOne(){
@@ -280,6 +280,8 @@ function loadTestBoardOne(){
         if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
         if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
     }
+    hidePlayableMoves();
+    showPlayableMoves();
 }
 
 function loadTestBoardTwo(){
@@ -301,4 +303,6 @@ function loadTestBoardTwo(){
         if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
         if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
     }
+    hidePlayableMoves();
+    showPlayableMoves();
 }
