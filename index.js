@@ -1,6 +1,7 @@
 //left off on makeMove(). 
 //North and south makeMove() is currently broken
 
+
 const cells = document.querySelectorAll(".cell");
 const pieces = document.querySelectorAll(".piece");
 const cellStatus = document.querySelector("#cellStatus");
@@ -68,30 +69,48 @@ function makeMove(piece, index,){ //updateCell
     let pos;
 
     let initialRow = Math.trunc((Number(index))/8);
-    let newRow = Math.trunc((Number(index))/8);
+    let newRow = initialRow;
     let diffRow;
 
-    let addCount = 0;
+    let iterance = 0;
+    let previousPos = 0;
+    let previousRow = initialRow;
     for(let i = 0; i < 8; i++){//runs all 8 directions
         console.log("\tFor loop direction: "+directions[i]);
         pos = index;
         console.log("\tForward loop start: ");
         pieceCount = 0;
+        iterance = 0;
+        let previousRow = initialRow;
 
         loop1 = true;
         while(loop1==true){
+            iterance++;
+            console.log("\t\t\titerance: " + iterance);
             loop2 = true;
-            pos = Number(pos) + Number(directions[i]);
+
+            // previousPos = pos;
+            pos = Number(pos) + Number(directions[i]); //each loop run, this moves pos to the next position in the board array.
+            
+            if(iterance != 1){
+                previousRow = newRow;
+            }
+            // previousRow = newRow;
             newRow = Math.trunc(Number(pos)/8);
-            diffRow = Math.trunc(Number(initialRow) - Number(newRow));
-            if(i == 3 || i == 7){diffRow = Math.trunc(Number(initialRow) - Number(newRow)) - Number(pieceCount);}
-            if(i == 0 || i == 4){diffRow = Math.trunc(Number(initialRow) - Number(newRow)) - Number(pieceCount);}
+            
+            diffRow = Math.trunc(Number(previousRow) - Number(newRow));
+
+            if(i == 3 || i == 7){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
+            if(i == 0 || i == 4){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
             console.log("\t\tdiffRow = " + diffRow + " | rowCheck = " + rowCheck[i] + 
-                " | initialRow = " + initialRow + " | newRow = " + newRow);
+                " | initialRow = " + initialRow + " | newRow = " + newRow + " | previousRow = " + previousRow);
             if(pos < 0 || pos > 63){loop1 = false;}
-            // if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
+            if(i != 0 && i != 4){   
+                if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
+            }
 
             console.log("\t\tPOS: "+pos);
+
             if(options[pos] == ''){console.log("\t\tEmpty spot | Terminated at "+pos); loop1 = false;}
             console.log("\t\toppoPlayer = "+oppoPlayer + " |options[pos] = "+options[pos]);
             if(options[pos] == oppoPlayer){console.log("\t\tAdd to piece count");pieceCount++};
