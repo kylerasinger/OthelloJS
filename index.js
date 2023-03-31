@@ -82,9 +82,7 @@ function makeMove(piece, index,){
 
             //row checking
             pos = Number(pos) + Number(directions[i]); 
-            if(iterance != 1){
-                previousRow = newRow;
-            }
+            if(iterance != 1){previousRow = newRow;}
             newRow = Math.trunc(Number(pos)/8);
             diffRow = Math.trunc(Number(previousRow) - Number(newRow));
             if(i == 3 || i == 7){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
@@ -138,24 +136,26 @@ function checkDir(pos, dir, rowCheck){
     let pieceCount = 0;
 
     let initialRow = Math.trunc((Number(pos))/8);
-    pos = Number(pos) + Number(dir);
     let newRow = Math.trunc((Number(pos))/8);
     let diffRow = 0;
+    let previousRow = initialRow;
 
     while(loop == true){
         iterance++;
-        //check for row skipping, its currently broken
-        diffRow = Math.trunc(Number(initialRow) - Number(newRow));
-        if(diffRow != rowCheck){/*console.log("\t\trow skip | terminated. ");*/ loop = false; break;}
+
+        //check for row skipping
+        pos = Number(pos) + Number(dir);
+        if(iterance != 1){previousRow = newRow};
+        newRow = Math.trunc(Number(pos)/8);
+        diffRow = Math.trunc(Number(previousRow) - Number(newRow));
+        if(diffRow != rowCheck){loop = false; break;}
 
         //other checks that actually work
-        if(pos < 0 || pos > 63){/*console.log("\t\tout of bounds | terminated. ");*/ loop = false; break;} //check for out of bounds
-        if(iterance == 1 && options[pos] == currentPlayer){/*console.log("\t\tfriendly next ");*/ loop = false; break;} //check for if next spot is its own color
-        if(options[pos] == ''){/*console.log("\t\tempty cell | terminated");*/ loop = false;} //check for empty cell
-        if(options[pos] == currentPlayer && pieceCount > 0){/* console.log("\t\ttrue for index: " + pos);*/return true;}         //checks for its own end piece and makes sure that there are opposite pieces between.
+        if(pos < 0 || pos > 63){loop = false; break;} //check for out of bounds
+        if(iterance == 1 && options[pos] == currentPlayer){loop = false; break;} //check for if next spot is its own color
+        if(options[pos] == ''){loop = false;} //check for empty cell
+        if(options[pos] == currentPlayer && pieceCount > 0){return true;}         //checks for its own end piece and makes sure that there are opposite pieces between.
         if(options[pos] == oppoPlayer){pieceCount++;} //checks for opposite pieces in a direction
-        // //checks for its own end piece and makes sure that there are opposite pieces between.
-        pos = Number(pos) + Number(dir);
     }
 }
 
