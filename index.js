@@ -71,13 +71,12 @@ function makeMove(piece, index,){ //updateCell
     let pieceCount = 0;
     let pos;
 
+    //vars used for row checking
     let initialRow = Math.trunc((Number(index))/8);
     let newRow = initialRow;
     let diffRow;
-
     let iterance = 0;
-    let previousPos = 0;
-    let previousRow = initialRow;
+
     for(let i = 0; i < 8; i++){//runs all 8 directions
         // console.log("\tFor loop direction: "+directions[i]);
         pos = index;
@@ -193,7 +192,13 @@ function checkDir(pos, dir, rowCheck){
         // //checks for its own end piece and makes sure that there are opposite pieces between.
         pos = Number(pos) + Number(dir);
     }
+}
 
+function checkRowSkip(dir, rowDifference){
+    if(rowCheck[dir] == rowDifference){
+        return false;
+    }
+    return true;
 }
 
 function showPlayableMoves(){
