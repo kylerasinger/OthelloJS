@@ -36,8 +36,8 @@ function startGame(){
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
     togglePlayer.addEventListener("click", togglePlayerMode);
     restartBtn.addEventListener("click", restartGame);
-    // testBoardOne.addEventListener("click", loadTestBoardOne);
-    // testBoardTwo.addEventListener("click", loadTestBoardTwo);
+    testBoardOne.addEventListener("click", loadTestBoardOne);
+    testBoardTwo.addEventListener("click", loadTestBoardTwo);
 
     statusText.textContent = `${currentPlayer}'s turn` ;
 
@@ -235,8 +235,8 @@ function restartGame(){
     showPlayableMoves();
 }
 
-{//test case functions
     function loadTestBoardOne(){
+        console.log("LoadTestBoardOne");
         options =
         ["", "", "", "", "", "", "B", "", 
         "", "", "", "", "", "", "", "W", 
@@ -259,6 +259,7 @@ function restartGame(){
     }
 
     function loadTestBoardTwo(){
+        console.log("LoadTestBoardTwo");
         options =
         ["", "B", "", "", "", "", "", "", 
         "W", "", "", "", "", "B", "W", "", 
@@ -279,7 +280,6 @@ function restartGame(){
         hidePlayableMoves();
         showPlayableMoves();
     }
-}
 
 function togglePlayerMode(){
     console.log("toggle.");

@@ -13,6 +13,20 @@
     border: 1px solid green; 
 }
 
+.left{
+    width: 65%;
+    float: left;
+}
+
+.right{
+    width: 35%;
+    float: right;
+}
+
+#twoCollumns{
+    margin-left: 300px;
+}
+
 #boardContainer {
     display: grid;
     grid-template-columns: repeat(8, auto);
@@ -52,6 +66,32 @@
     cursor: pointer;
     width: 150px;
     height: 50px;
+    padding: 15px;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+#testBoardOne{
+    cursor: pointer;
+    width: 150px;
+    height: 25px;
+    padding: 15px;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+#testBoardTwo{
+    cursor: pointer;
+    width: 150px;
+    height: 25px;
     padding: 15px;
     border-radius: 25px;
     text-align: center;
