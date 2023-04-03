@@ -2,6 +2,7 @@ const cells = document.querySelectorAll(".cell");
 const pieces = document.querySelectorAll(".piece");
 const cellStatus = document.querySelector("#cellStatus");
 const restartBtn = document.querySelector("#restartBtn");
+const togglePlayer = document.querySelector("#toggleBtn");
 const testBoardOne = document.querySelector("#testBoardOne");
 const testBoardTwo = document.querySelector("#testBoardTwo");
 
@@ -24,6 +25,7 @@ let rowCheck = [ 1,  1, 0,-1,-1,-1,  0,  1,];
 //               N, NE, E,SE, S,SW,  W, NW,
 let currentPlayer = "B";
 let running = false;
+let playerMode = 0; //0 is vs AI : 1 is vs another player
 
 
 startGame();
@@ -32,9 +34,10 @@ startGame();
 function startGame(){
     running = true;
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
+    togglePlayer.addEventListener("click", togglePlayerMode);
     restartBtn.addEventListener("click", restartGame);
-    testBoardOne.addEventListener("click", loadTestBoardOne);
-    testBoardTwo.addEventListener("click", loadTestBoardTwo);
+    // testBoardOne.addEventListener("click", loadTestBoardOne);
+    // testBoardTwo.addEventListener("click", loadTestBoardTwo);
 
     statusText.textContent = `${currentPlayer}'s turn` ;
 
@@ -44,7 +47,7 @@ function startGame(){
 function cellClicked(){ 
     const cellIndex = this.getAttribute("cellIndex");
     const pieceIndex = this.getAttribute("pieceIndex");
-    if(checkMove(cellIndex) == false || !running) {console.log("Illegal Move"); return; } //logic check for if it is playable
+    if(checkMove(cellIndex) == false || !running){return;} //logic check for if it is playable
     if(checkMove(cellIndex) == true ){hidePlayableMoves(); makeMove(pieces[cellIndex], cellIndex);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
     checkWinner();
     takeTurn();
@@ -88,13 +91,13 @@ function makeMove(piece, index,){
             if(i == 3 || i == 7){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
             if(i == 0 || i == 4){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
             if(i != 0 && i != 4){   
-                if(diffRow != rowCheck[i]){console.log("\t\trow skip | terminated. "); loop = false; break;}
+                if(diffRow != rowCheck[i]){loop = false; break;}
             }
 
             //the rest of the checks
             if(pos < 0 || pos > 63){loop1 = false;}
-            if(options[pos] == ''){/*console.log("\t\tEmpty spot | Terminated at "+pos);*/ loop1 = false;}
-            if(options[pos] == oppoPlayer){/*console.log("\t\tAdd to piece count")*/;pieceCount++};
+            if(options[pos] == ''){loop1 = false;}
+            if(options[pos] == oppoPlayer){pieceCount++;}
 
             if(options[pos] == currentPlayer && pieceCount > 0){
                 //flanking piece found, time to get back and flip places
@@ -167,15 +170,19 @@ function checkRowSkip(dir, rowDifference){
 }
 
 function showPlayableMoves(){
+    let moveCounter = 0;
     for(i = 0; i < 64; i++){
         if(checkMove(i) == true){
+            moveCounter++;
             pieces[i].style.borderColor = "black";
         }
+    }
+    if(moveCounter == 0){
+        console.log("there is a winner, game over");
     }
 }
 
 function hidePlayableMoves(){
-    console.log("HIDING PLAYABLE MOVES");
     for(i = 0; i < 64; i++){
         if(pieces[i].style.borderColor == "black"){
             pieces[i].style.borderColor = "green";
@@ -207,6 +214,7 @@ function checkWinner(){
 }
 
 function restartGame(){
+    console.log("Restarting Game");
     options =
     ["", "", "", "", "", "", "", "", 
     "", "", "", "", "", "", "", "", 
@@ -227,48 +235,54 @@ function restartGame(){
     showPlayableMoves();
 }
 
-function loadTestBoardOne(){
-    console.log("load test board one");
-    options =
-    ["", "", "", "", "", "", "B", "", 
-    "", "", "", "", "", "", "", "W", 
-    "", "", "", "", "", "B", "", "", 
-    "", "W", "B", "", "", "", "W", "", 
-    "", "W", "", "", "", "B", "W", "", 
-    "", "", "B", "", "", "", "", "", 
-    "W", "", "", "", "", "", "", "", 
-    "", "B", "", "", "", "", "", "", ];
-    currentPlayer = "B";
-    statusText.textContent = currentPlayer + "'s turn";
-    for(let i = 0; i < 63; i++){
-        pieces[i].style.backgroundColor = "green";
-        if(i == 6 || i == 57 || i == 26 || i == 37 || i == 42 || i == 21){pieces[i].style.backgroundColor = "black"}
-        if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
-        if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
+{//test case functions
+    function loadTestBoardOne(){
+        options =
+        ["", "", "", "", "", "", "B", "", 
+        "", "", "", "", "", "", "", "W", 
+        "", "", "", "", "", "B", "", "", 
+        "", "W", "B", "", "", "", "W", "", 
+        "", "W", "", "", "", "B", "W", "", 
+        "", "", "B", "", "", "", "", "", 
+        "W", "", "", "", "", "", "", "", 
+        "", "B", "", "", "", "", "", "", ];
+        currentPlayer = "B";
+        statusText.textContent = currentPlayer + "'s turn";
+        for(let i = 0; i < 63; i++){
+            pieces[i].style.backgroundColor = "green";
+            if(i == 6 || i == 57 || i == 26 || i == 37 || i == 42 || i == 21){pieces[i].style.backgroundColor = "black"}
+            if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
+            if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
+        }
+        hidePlayableMoves();
+        showPlayableMoves();
     }
-    hidePlayableMoves();
-    showPlayableMoves();
+
+    function loadTestBoardTwo(){
+        options =
+        ["", "B", "", "", "", "", "", "", 
+        "W", "", "", "", "", "B", "W", "", 
+        "", "", "", "", "", "", "W", "", 
+        "", "", "", "", "", "B", "", "", 
+        "", "", "B", "", "", "", "", "", 
+        "", "W", "", "", "", "", "", "", 
+        "", "W", "B", "", "", "", "", "W", 
+        "", "", "", "", "", "", "B", "", ];
+        currentPlayer = "B";
+        statusText.textContent = currentPlayer + "'s turn";
+        for(let i = 0; i < 63; i++){
+            pieces[i].style.backgroundColor = "green";
+            if(i == 1 || i == 13 || i == 50 || i == 62 || i == 29 || i == 34){pieces[i].style.backgroundColor = "black"}
+            if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
+            if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
+        }
+        hidePlayableMoves();
+        showPlayableMoves();
+    }
 }
 
-function loadTestBoardTwo(){
-    console.log("load test board two");
-    options =
-    ["", "B", "", "", "", "", "", "", 
-    "W", "", "", "", "", "B", "W", "", 
-    "", "", "", "", "", "", "W", "", 
-    "", "", "", "", "", "B", "", "", 
-    "", "", "B", "", "", "", "", "", 
-    "", "W", "", "", "", "", "", "", 
-    "", "W", "B", "", "", "", "", "W", 
-    "", "", "", "", "", "", "B", "", ];
-    currentPlayer = "B";
-    statusText.textContent = currentPlayer + "'s turn";
-    for(let i = 0; i < 63; i++){
-        pieces[i].style.backgroundColor = "green";
-        if(i == 1 || i == 13 || i == 50 || i == 62 || i == 29 || i == 34){pieces[i].style.backgroundColor = "black"}
-        if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
-        if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
-    }
-    hidePlayableMoves();
-    showPlayableMoves();
+function togglePlayerMode(){
+    console.log("toggle.");
+    if(playerMode = 0){togglePlayer.textContent = "Currently VS Player"; playerMode = 1;}
+    else if(playerMode = 1){togglePlayer.textContent = "Currently VS Bot"; playerMode = 0;}
 }

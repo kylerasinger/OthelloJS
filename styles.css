@@ -29,8 +29,49 @@
 
 #restartBtn{
     cursor: pointer;
+    width: 150px;
+    height: 25px;
+    padding: 15px;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+#togglePlayer{
+    cursor: pointer;
 }
 
 #checkWinnerBtn{
     cursor: pointer;
+}
+
+#toggleBtn{
+    cursor: pointer;
+    width: 150px;
+    height: 50px;
+    padding: 15px;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+#btnDiv{
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.transclass{
+    background-color:#577EFD;
+}
+    
+.transclass:hover{
+    background-color:lightblue;
+    transition:background-color 1s ease 0s;
 }
