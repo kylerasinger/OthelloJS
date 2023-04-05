@@ -40,21 +40,44 @@ function startGame(){
     testBoardTwo.addEventListener("click", loadTestBoardTwo);
 
     statusText.textContent = `${currentPlayer}'s turn` ;
-
+    
     showPlayableMoves();
 }
 
 function cellClicked(){ 
     const cellIndex = this.getAttribute("cellIndex");
-    const pieceIndex = this.getAttribute("pieceIndex");
+    // const pieceIndex = this.getAttribute("pieceIndex");
     if(checkMove(cellIndex) == false || !running){return;} //logic check for if it is playable
-    if(checkMove(cellIndex) == true ){hidePlayableMoves(); makeMove(pieces[cellIndex], cellIndex);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
+    if(checkMove(cellIndex) == true ){hidePlayableMoves(); makeMove(pieces[cellIndex], cellIndex, playerMode);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
     checkWinner();
     takeTurn();
+    if(playerMode == 0 && currentPlayer == "W"){
+        console.log("AI TURN, EXECUTE TURN");
+        botMakeMove();
+    }
     showPlayableMoves();
 }
 
-function makeMove(piece, index,){
+function botMakeMove(){
+    console.log("bot checks all spots and finds best play.");
+    let possibleMoves = [];
+    for(let i = 0; i < 64; i++){
+        if(checkMove(i) == true){
+            possibleMoves.push(i);
+        }
+    }
+    
+    console.log(possibleMoves);
+
+    let botOptions = options;
+    for(let i = 0; i < possibleMoves.length; i++){
+    }
+
+    console.log("bot options: " + botOptions);
+    // takeTurn();
+}
+
+function makeMove(piece, index, playerMode){
     let oppoPlayer;
     let oppoColour;
     let currentColour;
@@ -235,54 +258,55 @@ function restartGame(){
     showPlayableMoves();
 }
 
-    function loadTestBoardOne(){
-        console.log("LoadTestBoardOne");
-        options =
-        ["", "", "", "", "", "", "B", "", 
-        "", "", "", "", "", "", "", "W", 
-        "", "", "", "", "", "B", "", "", 
-        "", "W", "B", "", "", "", "W", "", 
-        "", "W", "", "", "", "B", "W", "", 
-        "", "", "B", "", "", "", "", "", 
-        "W", "", "", "", "", "", "", "", 
-        "", "B", "", "", "", "", "", "", ];
-        currentPlayer = "B";
-        statusText.textContent = currentPlayer + "'s turn";
-        for(let i = 0; i < 63; i++){
-            pieces[i].style.backgroundColor = "green";
-            if(i == 6 || i == 57 || i == 26 || i == 37 || i == 42 || i == 21){pieces[i].style.backgroundColor = "black"}
-            if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
-            if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
-        }
-        hidePlayableMoves();
-        showPlayableMoves();
+function loadTestBoardOne(){
+    console.log("LoadTestBoardOne");
+    options =
+    ["", "", "", "", "", "", "B", "", 
+    "", "", "", "", "", "", "", "W", 
+    "", "", "", "", "", "B", "", "", 
+    "", "W", "B", "", "", "", "W", "", 
+    "", "W", "", "", "", "B", "W", "", 
+    "", "", "B", "", "", "", "", "", 
+    "W", "", "", "", "", "", "", "", 
+    "", "B", "", "", "", "", "", "", ];
+    currentPlayer = "B";
+    statusText.textContent = currentPlayer + "'s turn";
+    for(let i = 0; i < 63; i++){
+        pieces[i].style.backgroundColor = "green";
+        if(i == 6 || i == 57 || i == 26 || i == 37 || i == 42 || i == 21){pieces[i].style.backgroundColor = "black"}
+        if(i == 15 || i == 48 || i == 25 || i == 38 || i == 33 || i == 30){pieces[i].style.backgroundColor = "white"}
+        if(i == 24 || i == 39){pieces[i].style.backgroundColor = "yellow"}
     }
+    hidePlayableMoves();
+    showPlayableMoves();
+}
 
-    function loadTestBoardTwo(){
-        console.log("LoadTestBoardTwo");
-        options =
-        ["", "B", "", "", "", "", "", "", 
-        "W", "", "", "", "", "B", "W", "", 
-        "", "", "", "", "", "", "W", "", 
-        "", "", "", "", "", "B", "", "", 
-        "", "", "B", "", "", "", "", "", 
-        "", "W", "", "", "", "", "", "", 
-        "", "W", "B", "", "", "", "", "W", 
-        "", "", "", "", "", "", "B", "", ];
-        currentPlayer = "B";
-        statusText.textContent = currentPlayer + "'s turn";
-        for(let i = 0; i < 63; i++){
-            pieces[i].style.backgroundColor = "green";
-            if(i == 1 || i == 13 || i == 50 || i == 62 || i == 29 || i == 34){pieces[i].style.backgroundColor = "black"}
-            if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
-            if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
-        }
-        hidePlayableMoves();
-        showPlayableMoves();
+function loadTestBoardTwo(){
+    console.log("LoadTestBoardTwo");
+    options =
+    ["", "B", "", "", "", "", "", "", 
+    "W", "", "", "", "", "B", "W", "", 
+    "", "", "", "", "", "", "W", "", 
+    "", "", "", "", "", "B", "", "", 
+    "", "", "B", "", "", "", "", "", 
+    "", "W", "", "", "", "", "", "", 
+    "", "W", "B", "", "", "", "", "W", 
+    "", "", "", "", "", "", "B", "", ];
+    currentPlayer = "B";
+    statusText.textContent = currentPlayer + "'s turn";
+    for(let i = 0; i < 63; i++){
+        pieces[i].style.backgroundColor = "green";
+        if(i == 1 || i == 13 || i == 50 || i == 62 || i == 29 || i == 34){pieces[i].style.backgroundColor = "black"}
+        if(i == 8 || i == 14 || i == 55 || i == 49 || i == 22 || i == 41){pieces[i].style.backgroundColor = "white"}
+        if(i == 15 || i == 48 ){pieces[i].style.backgroundColor = "yellow"}
     }
+    hidePlayableMoves();
+    showPlayableMoves();
+}
 
 function togglePlayerMode(){
+    restartGame();
     console.log("toggle.");
-    if(playerMode = 0){togglePlayer.textContent = "Currently VS Player"; playerMode = 1;}
-    else if(playerMode = 1){togglePlayer.textContent = "Currently VS Bot"; playerMode = 0;}
+    if(playerMode == 0){togglePlayer.textContent = "Currently VS Player"; playerMode = 1;}
+    else if(playerMode == 1){togglePlayer.textContent = "Currently VS Bot"; playerMode = 0;}
 }
