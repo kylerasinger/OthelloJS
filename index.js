@@ -55,6 +55,7 @@ function cellClicked(){
     if(playerMode == 0 && currentPlayer == "W"){
         console.log("AI TURN, EXECUTE TURN");
         botCheckOptions();
+        takeTurn();
     }
     showPlayableMoves();
 }
@@ -68,33 +69,34 @@ function botCheckOptions(){
 
     botOptions = options.slice();    
 
-    console.log("pre loop bot options:" + botOptions);
+    // console.log("pre loop bot options:" + botOptions);
     let possibleOpponentMoveChoices = [];
-    for(let i = 0; i < botPossibleMoves.length; i++){
+    for(let i = 0; i < botPossibleMoves.length; i++){ //finds the amount of choices the opponent will have depending on which move it makes.
         botOptions = options.slice();
-        //place token at first location
-        console.log("make move on index: " + botPossibleMoves[i]);
+            console.log("make move on index: " + botPossibleMoves[i]);
         botMakeMove(botPossibleMoves[i]);
             // console.log("i = " + i + " | bot options: " + botOptions);
 
-        //count number of possible moves for opponent
         let numOfPlayableMoves;
         numOfPlayableMoves = countPlayableMoves();
 
-            console.log("i = " + i + " | playable count: " + numOfPlayableMoves);
-
-        //add number of possible moves to array 
-
-        
-        //
+        possibleOpponentMoveChoices[i] = numOfPlayableMoves;
+            console.log(possibleOpponentMoveChoices);
     }
-    console.log("post loop options:" + options);
+    let bestChoice = possibleOpponentMoveChoices.indexOf(Math.min(...possibleOpponentMoveChoices));
+    let bestIndex = botPossibleMoves[bestChoice];
+
+    console.log("best choice: " + bestChoice + " | best index: " + bestIndex);
+    // console.log("post loop options:" + options);
+
+    makeMove(pieces[bestIndex], bestIndex);
 
     // takeTurn();
 }
 
 
 function makeMove(piece, index){
+    console.log("making move");
     let oppoPlayer;
     let oppoColour;
     let currentColour;
@@ -360,12 +362,14 @@ function showPlayableMoves(){
 }
 
 function countPlayableMoves(){
+    currentPlayer = "B";
     let moveCounter = 0;
     for(i = 0; i < 64; i++){
         if(botCheckMove(i) == true){
             moveCounter++;
         }
     }
+    currentPlayer = "W";
     return moveCounter;
 }
 
