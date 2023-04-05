@@ -19,6 +19,7 @@ let options =
     pieces[28].style.backgroundColor = "black";
     pieces[35].style.backgroundColor = "black";
     pieces[36].style.backgroundColor = "white";
+let botOptions = options.slice();
 let directions = [-8, -7, 1, 9, 8, 7, -1, -9];
 //                 N, NE, E,SE, S,SW,  W, NW,
 let rowCheck = [ 1,  1, 0,-1,-1,-1,  0,  1,];
@@ -48,36 +49,52 @@ function cellClicked(){
     const cellIndex = this.getAttribute("cellIndex");
     // const pieceIndex = this.getAttribute("pieceIndex");
     if(checkMove(cellIndex) == false || !running){return;} //logic check for if it is playable
-    if(checkMove(cellIndex) == true ){hidePlayableMoves(); makeMove(pieces[cellIndex], cellIndex, playerMode);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
+    if(checkMove(cellIndex) == true ){hidePlayableMoves(); makeMove(pieces[cellIndex], cellIndex);} //if(checkMove(cellIndex) == true ){makeMove(this, cellIndex);}
     checkWinner();
     takeTurn();
     if(playerMode == 0 && currentPlayer == "W"){
         console.log("AI TURN, EXECUTE TURN");
-        botMakeMove();
+        botCheckOptions();
     }
     showPlayableMoves();
 }
 
-function botMakeMove(){
-    console.log("bot checks all spots and finds best play.");
-    let possibleMoves = [];
+function botCheckOptions(){
+    let botPossibleMoves = [];
     for(let i = 0; i < 64; i++){
-        if(checkMove(i) == true){
-            possibleMoves.push(i);
-        }
+        if(checkMove(i) == true){botPossibleMoves.push(i);}
     }
-    
-    console.log(possibleMoves);
+    console.log(botPossibleMoves)
 
-    let botOptions = options;
-    for(let i = 0; i < possibleMoves.length; i++){
+    botOptions = options.slice();    
+
+    console.log("pre loop bot options:" + botOptions);
+    let possibleOpponentMoveChoices = [];
+    for(let i = 0; i < botPossibleMoves.length; i++){
+        botOptions = options.slice();
+        //place token at first location
+        console.log("make move on index: " + botPossibleMoves[i]);
+        botMakeMove(botPossibleMoves[i]);
+            // console.log("i = " + i + " | bot options: " + botOptions);
+
+        //count number of possible moves for opponent
+        let numOfPlayableMoves;
+        numOfPlayableMoves = countPlayableMoves();
+
+            console.log("i = " + i + " | playable count: " + numOfPlayableMoves);
+
+        //add number of possible moves to array 
+
+        
+        //
     }
+    console.log("post loop options:" + options);
 
-    console.log("bot options: " + botOptions);
     // takeTurn();
 }
 
-function makeMove(piece, index, playerMode){
+
+function makeMove(piece, index){
     let oppoPlayer;
     let oppoColour;
     let currentColour;
@@ -143,6 +160,68 @@ function makeMove(piece, index, playerMode){
     }
 }
 
+function botMakeMove(index){
+    let oppoPlayer;
+    let oppoColour;
+    let currentColour;
+    if(currentPlayer == 'B'){oppoPlayer = 'W'; oppoColour = "white"; currentColour = "black";}
+    if(currentPlayer == 'W'){oppoPlayer = 'B'; oppoColour = "blacK"; currentColour = "white";}
+    loop1 = true;
+    loop2 = true;
+    let pieceCount = 0;
+    let pos;
+
+    //vars used for row checking
+    let initialRow = Math.trunc((Number(index))/8);
+    let newRow = initialRow;
+    let diffRow;
+    let iterance = 0;
+
+    for(let i = 0; i < 8; i++){ //8 directions
+        pos = index;
+        pieceCount = 0;
+        iterance = 0;
+        loop1 = true;
+
+        let previousRow = initialRow;
+
+        while(loop1==true){
+            iterance++;
+            loop2 = true;
+
+            //row checking
+            pos = Number(pos) + Number(directions[i]); 
+            if(iterance != 1){previousRow = newRow;}
+            newRow = Math.trunc(Number(pos)/8);
+            diffRow = Math.trunc(Number(previousRow) - Number(newRow));
+            if(i == 3 || i == 7){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
+            if(i == 0 || i == 4){diffRow = Math.trunc(Number(previousRow) - Number(newRow));}
+            if(i != 0 && i != 4){   
+                if(diffRow != rowCheck[i]){loop = false; break;}
+            }
+
+            //the rest of the checks
+            if(pos < 0 || pos > 63){loop1 = false;}
+            if(botOptions[pos] == ''){loop1 = false;}
+            if(botOptions[pos] == oppoPlayer){pieceCount++;}
+
+            if(options[pos] == currentPlayer && pieceCount > 0){
+                //flanking piece found, time to get back and flip places
+                while(loop2==true){
+                    pos = Number(pos) - Number(directions[i])
+                    if(botOptions[pos] == oppoPlayer){
+                        botOptions[pos] = currentPlayer;
+                    }else{
+                        botOptions[pos] = currentPlayer;
+                        loop2 = false;
+                    }
+                }
+                loop1 = false;
+            }
+        }
+    }
+}
+
 function checkMove(index){    
     if(options[index] != ''){return false;}
     for(let i = 0; i < 8; i++){
@@ -151,6 +230,81 @@ function checkMove(index){
         }
     }
     return false;
+}
+
+function botCheckMove(index){
+    if(botOptions[index] != ''){return false;}
+    for(let i = 0; i < 8; i++){
+        
+        if(botCheckDir(index, directions[i], rowCheck[i]) == true){
+            console.log("BOTCHECKMOVE");
+            return true;
+        }
+    }
+    return false;
+}
+
+function botCheckDir(pos, dir, rowCheck){
+    let oppoPlayer;
+    if(currentPlayer == 'B'){oppoPlayer = 'W';}
+    if(currentPlayer == 'W'){oppoPlayer = 'B';}
+    loop = true;
+    let iterance = 0;
+    let pieceCount = 0;
+
+    let initialRow = Math.trunc((Number(pos))/8);
+    let newRow = Math.trunc((Number(pos))/8);
+    let diffRow = 0;
+    let previousRow = initialRow;
+
+    while(loop == true){
+        iterance++;
+        //check for row skipping
+        pos = Number(pos) + Number(dir);
+        if(iterance != 1){previousRow = newRow};
+        newRow = Math.trunc(Number(pos)/8);
+        diffRow = Math.trunc(Number(previousRow) - Number(newRow));
+        if(diffRow != rowCheck){loop = false; break;}
+
+        //other checks that actually work
+        if(pos < 0 || pos > 63){loop = false; break;} //check for out of bounds
+        if(iterance == 1 && botOptions[pos] == currentPlayer){loop = false; break;} //check for if next spot is its own color
+        if(botOptions[pos] == ''){loop = false;} //check for empty cell
+        if(botOptions[pos] == currentPlayer && pieceCount > 0){return true;}         //checks for its own end piece and makes sure that there are opposite pieces between.
+        if(botOptions[pos] == oppoPlayer){pieceCount++;} //checks for opposite pieces in a direction
+    }
+}
+
+function botCheckDir(pos, dir, rowCheck){
+    let oppoPlayer;
+    if(currentPlayer == 'B'){oppoPlayer = 'W';}
+    if(currentPlayer == 'W'){oppoPlayer = 'B';}
+    loop = true;
+    let iterance = 0;
+    let pieceCount = 0;
+
+    let initialRow = Math.trunc((Number(pos))/8);
+    let newRow = Math.trunc((Number(pos))/8);
+    let diffRow = 0;
+    let previousRow = initialRow;
+
+    while(loop == true){
+        iterance++;
+
+        //check for row skipping
+        pos = Number(pos) + Number(dir);
+        if(iterance != 1){previousRow = newRow};
+        newRow = Math.trunc(Number(pos)/8);
+        diffRow = Math.trunc(Number(previousRow) - Number(newRow));
+        if(diffRow != rowCheck){loop = false; break;}
+
+        //other checks that actually work
+        if(pos < 0 || pos > 63){loop = false; break;} //check for out of bounds
+        if(iterance == 1 && botOptions[pos] == currentPlayer){loop = false; break;} //check for if next spot is its own color
+        if(botOptions[pos] == ''){loop = false;} //check for empty cell
+        if(botOptions[pos] == currentPlayer && pieceCount > 0){return true;}         //checks for its own end piece and makes sure that there are opposite pieces between.
+        if(botOptions[pos] == oppoPlayer){pieceCount++;} //checks for opposite pieces in a direction
+    }
 }
 
 function checkDir(pos, dir, rowCheck){
@@ -203,6 +357,16 @@ function showPlayableMoves(){
     if(moveCounter == 0){
         console.log("there is a winner, game over");
     }
+}
+
+function countPlayableMoves(){
+    let moveCounter = 0;
+    for(i = 0; i < 64; i++){
+        if(botCheckMove(i) == true){
+            moveCounter++;
+        }
+    }
+    return moveCounter;
 }
 
 function hidePlayableMoves(){
