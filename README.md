@@ -1,2 +1,2 @@
-# othello_game_web
+# OthelloJS
  Recreating othello to be viewed through a browser with the goal to learn basic a basic frontend language (html,css,javascript) and to create modular, readable code.
